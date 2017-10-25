@@ -1,7 +1,7 @@
 NAME = $(notdir $(PWD))
 
 build:
-	go build -o app
+	CGO_ENABLED=0 go build -o app
 	docker build -t $(NAME):latest -f Dockerfile .
 
 push@%:
