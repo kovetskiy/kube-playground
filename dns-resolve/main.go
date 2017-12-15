@@ -3,18 +3,32 @@ package main
 import (
 	"log"
 	"net"
+	"sync"
 )
 
 func main() {
-	host := "tsdb-gateway"
+	hosts := []string{
+		"tsdb-gateway",
+		"series-resampler",
+		"metrics-aggregator",
+	}
 	for {
-		log.Println("looking for", host)
-		addrs, err := net.LookupHost(host)
-		if err != nil {
-			log.Println(err)
-			continue
+		wg := &sync.WaitGroup{}
+		wg.Add(3)
+		for _, host := range hosts {
+			go func(host string) {
+				defer wg.Done()
+				log.Println("looking for", host)
+				addrs, err := net.LookupHost(host)
+				if err != nil {
+					log.Println(err)
+					continue
+				}
+
+				log.Printf("%v", addrs)
+			}(host)
 		}
 
-		log.Printf("%v", addrs)
+		wg.Wait()
 	}
 }
