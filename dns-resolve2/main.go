@@ -22,7 +22,7 @@ func main() {
 				addrs, err := net.LookupHost(host)
 				if err != nil {
 					log.Println(err)
-					continue
+					return
 				}
 
 				log.Printf("%v", addrs)
